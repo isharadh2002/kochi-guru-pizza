@@ -53,9 +53,9 @@ export const metadata: Metadata = {
     apple: "/logo/logo.svg",
   },
   other: {
-    "geo.region": "IN-KL",
-    "geo.placename": "Kochi",
-    "geo.position": "9.9312;76.2673",
+    "geo.region": "LK-32",
+    "geo.placename": "Walasmulla",
+    "geo.position": "6.2667;80.7333",
   },
 };
 
@@ -78,14 +78,17 @@ export default function RootLayout({
               description: "Authentic wood-fired pizzas in Kochi - Coming Soon",
               address: {
                 "@type": "PostalAddress",
-                addressLocality: "Kochi",
-                addressRegion: "Kerala",
-                addressCountry: "IN",
+                addressLocality: "Walasmulla",
+                addressRegion: "Matara",
+                addressCountry: "Sri Lanka",
+                streetAddress:
+                  "No.114, Basement Floor, Beliatta - Walasmulla Rd",
+                postalCode: "82220",
               },
               openingHoursSpecification: {
                 "@type": "OpeningHoursSpecification",
-                opens: "00:00",
-                closes: "00:00",
+                opens: "10:00",
+                closes: "22:00",
                 dayOfWeek: [
                   "Monday",
                   "Tuesday",
@@ -96,7 +99,7 @@ export default function RootLayout({
                   "Sunday",
                 ],
               },
-              priceRange: "$$",
+              priceRange: "LKR 900-4000",
               servesCuisine: "Pizza",
               slogan: "Where Fire Meets Flavor",
             }),
