@@ -1,6 +1,7 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Next.js frontend application for Kochi Guru Pizza website",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -8,6 +9,8 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "author": "Ishara Dhanushan",
+  "license": "ISC",
   "dependencies": {
     "next": "^16.1.6",
     "react": "19.1.0",
