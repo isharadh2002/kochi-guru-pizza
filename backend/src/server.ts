@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import connectDB from "./config/db";
 import config from "./config";
+import passport from "./config/passport";
+import authRoutes from "./routes/authRoutes";
 
 connectDB();
 
@@ -12,18 +15,32 @@ if (!config.FRONTEND_URL) {
   throw new Error("FRONTEND_URL is not defined");
 }
 
+// Security middleware
+app.use(helmet());
+
+// CORS configuration
 app.use(
   cors({
     origin: config.FRONTEND_URL,
     credentials: true
   })
 );
+
+// Body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Initialize Passport
+app.use(passport.initialize());
+
+// Mount routes
+app.use("/auth", authRoutes);
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("Kochi Guru Pizza Backend is running");
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-});
-
-app.get("/", (req, res) => {
-  res.send("Kochi Guru Pizza Backend is running");
 });

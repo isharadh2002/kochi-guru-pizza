@@ -4,17 +4,20 @@
   "description": "Next.js frontend application for Kochi Guru Pizza website",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "author": "Ishara Dhanushan",
   "license": "ISC",
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "lucide-react": "^0.563.0",
     "next": "^16.1.6",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-hot-toast": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

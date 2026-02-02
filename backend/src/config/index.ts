@@ -1,12 +1,43 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const { PORT, MONGO_DB_URI, FRONTEND_URL } = process.env;
+const {
+  PORT,
+  MONGO_DB_URI,
+  FRONTEND_URL,
+  JWT_SECRET,
+  JWT_EXPIRES_IN,
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRES_IN,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL
+} = process.env;
 
-const config = {
+interface Config {
+  PORT: string | number;
+  MONGO_DB_URI: string | undefined;
+  FRONTEND_URL: string | undefined;
+  JWT_SECRET: string | undefined;
+  JWT_EXPIRES_IN: string;
+  REFRESH_TOKEN_SECRET: string | undefined;
+  REFRESH_TOKEN_EXPIRES_IN: string;
+  GOOGLE_CLIENT_ID: string | undefined;
+  GOOGLE_CLIENT_SECRET: string | undefined;
+  GOOGLE_CALLBACK_URL: string | undefined;
+}
+
+const config: Config = {
   PORT: PORT || 5000,
   MONGO_DB_URI: MONGO_DB_URI,
-  FRONTEND_URL: FRONTEND_URL
+  FRONTEND_URL: FRONTEND_URL,
+  JWT_SECRET: JWT_SECRET,
+  JWT_EXPIRES_IN: JWT_EXPIRES_IN || "15m",
+  REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRES_IN: REFRESH_TOKEN_EXPIRES_IN || "7d",
+  GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
+  GOOGLE_CALLBACK_URL: GOOGLE_CALLBACK_URL
 };
 
 export default config;
