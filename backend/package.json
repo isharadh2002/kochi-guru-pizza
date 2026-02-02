@@ -2,11 +2,11 @@
   "name": "kochi-guru-pizza-backend",
   "version": "1.0.0",
   "description": "Express.js backend application for Kochi Guru Pizza website",
-  "main": "index.ts",
+  "main": "src/server.ts",
   "scripts": {
-    "dev": "tsx watch index.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "npm run lint && tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "lint": "eslint"
   },
   "author": "Ishara Dhanushan",
@@ -20,6 +20,7 @@
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5",
     "multer": "^2.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
