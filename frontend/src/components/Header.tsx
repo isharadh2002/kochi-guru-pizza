@@ -13,15 +13,11 @@ import {
   LogOut,
   ChevronDown
 } from "lucide-react";
-import LoginModal from "./auth/LoginModal";
-import SignupModal from "@/components/auth/SignupModal";
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [signupModalOpen, setSignupModalOpen] = useState(false);
 
   return (
     <>
@@ -124,18 +120,18 @@ const Header: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <button
-                    onClick={() => setLoginModalOpen(true)}
+                  <Link
+                    href="/login"
                     className="px-4 py-2 text-gray-700 hover:text-orange-600 transition"
                   >
                     Login
-                  </button>
-                  <button
-                    onClick={() => setSignupModalOpen(true)}
+                  </Link>
+                  <Link
+                    href="/register"
                     className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
                   >
                     Sign Up
-                  </button>
+                  </Link>
                 </>
               )}
             </div>
@@ -208,48 +204,26 @@ const Header: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <button
-                    onClick={() => {
-                      setLoginModalOpen(true);
-                      setMobileMenuOpen(false);
-                    }}
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-left py-2 text-gray-700"
                   >
                     Login
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSignupModalOpen(true);
-                      setMobileMenuOpen(false);
-                    }}
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-left py-2 text-orange-600 font-medium"
                   >
                     Sign Up
-                  </button>
+                  </Link>
                 </>
               )}
             </nav>
           </div>
         )}
       </header>
-
-      {/* Modals */}
-      <LoginModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        onSwitchToSignup={() => {
-          setLoginModalOpen(false);
-          setSignupModalOpen(true);
-        }}
-      />
-      <SignupModal
-        isOpen={signupModalOpen}
-        onClose={() => setSignupModalOpen(false)}
-        onSwitchToLogin={() => {
-          setSignupModalOpen(false);
-          setLoginModalOpen(true);
-        }}
-      />
     </>
   );
 };

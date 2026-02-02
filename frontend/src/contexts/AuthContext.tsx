@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await authService.login(email, password);
       setUser(response.user);
       toast.success("Login successful!");
-      router.push("/");
+      // Don't redirect - let the modal handle closing
     } catch (error: any) {
       toast.error(error.message || "Login failed");
       throw error;
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await authService.register(name, email, password);
       setUser(response.user);
       toast.success("Registration successful!");
-      router.push("/");
+      // Don't redirect - let the modal handle closing
     } catch (error: any) {
       toast.error(error.message || "Registration failed");
       throw error;

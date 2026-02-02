@@ -19,15 +19,25 @@ export const AppProviders: React.FC<{ children: React.ReactNode }> = ({
             color: "#fff"
           },
           success: {
+            duration: 3000,
+            style: {
+              background: "#10b981",
+              color: "#fff"
+            },
             iconTheme: {
-              primary: "#10b981",
-              secondary: "#fff"
+              primary: "#fff",
+              secondary: "#10b981"
             }
           },
           error: {
+            duration: 4000,
+            style: {
+              background: "#ef4444",
+              color: "#fff"
+            },
             iconTheme: {
-              primary: "#ef4444",
-              secondary: "#fff"
+              primary: "#fff",
+              secondary: "#ef4444"
             }
           }
         }}
