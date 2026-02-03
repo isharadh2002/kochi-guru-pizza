@@ -85,7 +85,7 @@ export const register = async (req: Request, res: Response) => {
     await user.save();
 
     // Return user without password
-    const userResponse: any = user.toObject();
+    const userResponse: Partial<IUser> = user.toObject();
     delete userResponse.password;
     delete userResponse.refreshTokens;
 
@@ -148,7 +148,7 @@ export const login = async (req: Request, res: Response) => {
     await user.save();
 
     // Return user without password
-    const userResponse: any = user.toObject();
+    const userResponse: Partial<IUser> = user.toObject();
     delete userResponse.password;
     delete userResponse.refreshTokens;
 
@@ -289,7 +289,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     }
 
     // Return user without password
-    const userResponse: any = user.toObject();
+    const userResponse: Partial<IUser> = user.toObject();
     delete userResponse.password;
     delete userResponse.refreshTokens;
 

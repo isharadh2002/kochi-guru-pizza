@@ -13,7 +13,7 @@ export const authenticate = (
   passport.authenticate(
     "jwt",
     { session: false },
-    (err: Error, user: IUser, info: any) => {
+    (err: Error, user: IUser) => {
       if (err) {
         return res.status(500).json({ error: "Authentication error" });
       }
