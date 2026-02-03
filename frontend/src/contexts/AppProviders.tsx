@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import { AuthProvider } from "./AuthContext";
+import { AuthProvider } from "@contexts/AuthContext";
 
 export const AppProviders: React.FC<{ children: React.ReactNode }> = ({
   children

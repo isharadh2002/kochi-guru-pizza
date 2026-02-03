@@ -1,5 +1,6 @@
-import { httpClient, setTokens, clearTokens } from "../lib/httpClient";
-import type { User, AuthResponse } from "../types";
+import { httpClient, setTokens, clearTokens } from "@lib/httpClient";
+import { User } from "@typings/user";
+import { AuthResponse } from "@typings/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 

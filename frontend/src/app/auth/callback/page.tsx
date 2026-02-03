@@ -2,13 +2,15 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { setTokens } from "@/lib/httpClient";
+import { setTokens } from "@lib/httpClient";
+import { useAuth } from "@contexts/AuthContext";
 import toast from "react-hot-toast";
 import { CheckCircle } from "lucide-react";
 
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { refreshUser } = useAuth();
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -36,6 +38,9 @@ function AuthCallbackContent() {
       if (accessToken && refreshToken) {
         // Store tokens
         setTokens(accessToken, refreshToken);
+
+        // Sync user state
+        await refreshUser();
 
         // Ensure loading shows for at least 2 seconds
         const elapsed = Date.now() - startTime;

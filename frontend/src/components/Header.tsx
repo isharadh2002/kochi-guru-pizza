@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import {
   Menu,
   X,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -67,72 +67,76 @@ const Header: React.FC = () => {
 
             {/* Auth Section */}
             <div className="hidden md:flex items-center gap-4">
-              {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-2 hover:opacity-80 transition"
-                  >
-                    {user.profilePicture ? (
-                      <img
-                        src={user.profilePicture}
-                        alt={user.name}
-                        className="w-9 h-9 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center">
-                        <User className="w-5 h-5 text-white" />
-                      </div>
-                    )}
-                    <span className="text-gray-700 font-medium">
-                      {user.name}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  </button>
+              {!loading ? (
+                user ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className="flex items-center gap-2 hover:opacity-80 transition"
+                    >
+                      {user.profilePicture ? (
+                        <img
+                          src={user.profilePicture}
+                          alt={user.name}
+                          className="w-9 h-9 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center">
+                          <User className="w-5 h-5 text-white" />
+                        </div>
+                      )}
+                      <span className="text-gray-700 font-medium">
+                        {user.name}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-gray-500" />
+                    </button>
 
-                  {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                      <Link
-                        href="/orders"
-                        className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
-                      >
-                        <ShoppingBag className="w-4 h-4" />
-                        My Orders
-                      </Link>
-                      {(user.role === "admin" || user.role === "staff") && (
+                    {dropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
                         <Link
-                          href="/dashboard"
+                          href="/orders"
                           className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
                         >
-                          <LayoutDashboard className="w-4 h-4" />
-                          Dashboard
+                          <ShoppingBag className="w-4 h-4" />
+                          My Orders
                         </Link>
-                      )}
-                      <button
-                        onClick={logout}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-gray-50"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
+                        {(user.role === "admin" || user.role === "staff") && (
+                          <Link
+                            href="/dashboard"
+                            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Dashboard
+                          </Link>
+                        )}
+                        <button
+                          onClick={logout}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-gray-50"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="px-4 py-2 text-gray-700 hover:text-orange-600 transition"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="px-4 py-2 text-gray-700 hover:text-orange-600 transition"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
-                  >
-                    Sign Up
-                  </Link>
-                </>
+                <div className="w-9 h-9 rounded-full bg-orange-100 animate-pulse" />
               )}
             </div>
 
@@ -179,46 +183,53 @@ const Header: React.FC = () => {
                 Contact
               </Link>
 
-              {user ? (
-                <>
-                  <Link
-                    href="/orders"
-                    className="block py-2 text-gray-700 hover:text-orange-600"
-                  >
-                    My Orders
-                  </Link>
-                  {(user.role === "admin" || user.role === "staff") && (
+              {!loading ? (
+                user ? (
+                  <>
                     <Link
-                      href="/dashboard"
+                      href="/orders"
                       className="block py-2 text-gray-700 hover:text-orange-600"
                     >
-                      Dashboard
+                      My Orders
                     </Link>
-                  )}
-                  <button
-                    onClick={logout}
-                    className="block w-full text-left py-2 text-red-600"
-                  >
-                    Logout
-                  </button>
-                </>
+                    {(user.role === "admin" || user.role === "staff") && (
+                      <Link
+                        href="/dashboard"
+                        className="block py-2 text-gray-700 hover:text-orange-600"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+                    <button
+                      onClick={logout}
+                      className="block w-full text-left py-2 text-red-600"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-left py-2 text-gray-700"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-left py-2 text-orange-600 font-medium"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-left py-2 text-gray-700"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-left py-2 text-orange-600 font-medium"
-                  >
-                    Sign Up
-                  </Link>
-                </>
+                <div className="py-4 space-y-4">
+                  <div className="h-4 w-24 bg-gray-100 animate-pulse rounded" />
+                  <div className="h-4 w-32 bg-gray-100 animate-pulse rounded" />
+                </div>
               )}
             </nav>
           </div>

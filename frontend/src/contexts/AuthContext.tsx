@@ -3,9 +3,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { authService } from "../services/authService";
-import { getAccessToken } from "../lib/httpClient";
-import type { User, AuthContextType } from "../types";
+import { authService } from "@services/authService";
+import { getAccessToken } from "@lib/httpClient";
+import { User } from "@typings/user";
+import { AuthContextType } from "@typings/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -77,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const refreshToken = async () => {
+  const refreshUser = async () => {
     try {
       const userData = await authService.getCurrentUser();
       setUser(userData);
@@ -96,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         register,
         loginWithGoogle,
         logout,
-        refreshToken
+        refreshUser
       }}
     >
       {children}
