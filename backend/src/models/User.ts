@@ -10,7 +10,7 @@ export interface IUser extends Document {
   phone?: string;
   profilePicture?: string;
   emailVerified: boolean;
-  refreshToken?: string;
+  refreshTokens: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -59,9 +59,9 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: false
     },
-    refreshToken: {
-      type: String,
-      default: null
+    refreshTokens: {
+      type: [String],
+      default: []
     }
   },
   {

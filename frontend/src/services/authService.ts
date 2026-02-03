@@ -1,4 +1,9 @@
-import { httpClient, setTokens, clearTokens } from "@lib/httpClient";
+import {
+  httpClient,
+  setTokens,
+  clearTokens,
+  getRefreshToken
+} from "@lib/httpClient";
 import { User } from "@typings/user";
 import { AuthResponse } from "@typings/auth";
 
@@ -61,7 +66,8 @@ export const getCurrentUser = async (): Promise<User> => {
 export const logout = async (): Promise<void> => {
   try {
     await httpClient("/auth/logout", {
-      method: "POST"
+      method: "POST",
+      body: JSON.stringify({ refreshToken: getRefreshToken() })
     });
   } finally {
     // Clear tokens even if request fails

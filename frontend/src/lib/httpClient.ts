@@ -98,9 +98,11 @@ export const httpClient = async <T>(
           });
 
           if (refreshResponse.ok) {
-            const { accessToken: newAccessToken } =
-              await refreshResponse.json();
-            setAccessToken(newAccessToken);
+            const {
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken
+            } = await refreshResponse.json();
+            setTokens(newAccessToken, newRefreshToken);
 
             // Retry original request with new token
             headers["Authorization"] = `Bearer ${newAccessToken}`;
@@ -117,15 +119,18 @@ export const httpClient = async <T>(
           } else {
             // Refresh failed, clear tokens and throw error
             clearTokens();
+            if (typeof window !== "undefined") window.location.href = "/login";
             throw new Error("Session expired. Please login again.");
           }
         } catch (refreshError) {
           clearTokens();
+          if (typeof window !== "undefined") window.location.href = "/login";
           throw new Error("Session expired. Please login again.");
         }
       } else {
         // No refresh token, clear tokens
         clearTokens();
+        if (typeof window !== "undefined") window.location.href = "/login";
         throw new Error("Unauthorized");
       }
     }

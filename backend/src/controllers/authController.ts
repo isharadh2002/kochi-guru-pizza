@@ -73,13 +73,21 @@ export const register = async (req: Request, res: Response) => {
     const refreshToken = generateRefreshToken(user._id.toString());
 
     // Store refresh token in database
-    user.refreshToken = refreshToken;
+    user.refreshTokens.push(refreshToken);
+
+    // Enforce max sessions limit
+    if (user.refreshTokens.length > config.MAX_ACTIVE_SESSIONS) {
+      user.refreshTokens = user.refreshTokens.slice(
+        -config.MAX_ACTIVE_SESSIONS
+      );
+    }
+
     await user.save();
 
     // Return user without password
     const userResponse: any = user.toObject();
     delete userResponse.password;
-    delete userResponse.refreshToken;
+    delete userResponse.refreshTokens;
 
     res.status(201).json({
       user: userResponse,
@@ -128,13 +136,21 @@ export const login = async (req: Request, res: Response) => {
     const refreshToken = generateRefreshToken(user._id.toString());
 
     // Store refresh token in database
-    user.refreshToken = refreshToken;
+    user.refreshTokens.push(refreshToken);
+
+    // Enforce max sessions limit
+    if (user.refreshTokens.length > config.MAX_ACTIVE_SESSIONS) {
+      user.refreshTokens = user.refreshTokens.slice(
+        -config.MAX_ACTIVE_SESSIONS
+      );
+    }
+
     await user.save();
 
     // Return user without password
     const userResponse: any = user.toObject();
     delete userResponse.password;
-    delete userResponse.refreshToken;
+    delete userResponse.refreshTokens;
 
     res.status(200).json({
       user: userResponse,
@@ -168,16 +184,29 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
       config.REFRESH_TOKEN_SECRET as string
     ) as { id: string };
 
-    // Find user and verify refresh token matches
+    // Find user
     const user = await User.findById(decoded.id);
-    if (!user || user.refreshToken !== refreshToken) {
+
+    // Check if user exists and if the token is in the allowed list
+    if (!user || !user.refreshTokens.includes(refreshToken)) {
       return res.status(401).json({ error: "Invalid refresh token" });
     }
 
-    // Generate new access token
-    const accessToken = generateAccessToken(user._id.toString());
+    // Generate NEW tokens (Rotate)
+    const newAccessToken = generateAccessToken(user._id.toString());
+    const newRefreshToken = generateRefreshToken(user._id.toString());
 
-    res.status(200).json({ accessToken });
+    // Replace old refresh token with new one
+    // We filter out the old one and push the new one to handle the rotation securely
+    user.refreshTokens = user.refreshTokens.filter((rt) => rt !== refreshToken);
+    user.refreshTokens.push(newRefreshToken);
+
+    await user.save();
+
+    res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    });
   } catch (error) {
     console.error("Refresh token error:", error);
     res.status(401).json({ error: "Invalid or expired refresh token" });
@@ -190,18 +219,24 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
+    const { refreshToken } = req.body;
 
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // Clear refresh token from database
-    await User.findByIdAndUpdate(user._id, { refreshToken: null });
+    if (refreshToken) {
+      // Remove specific refresh token
+      await User.findByIdAndUpdate(user._id, {
+        $pull: { refreshTokens: refreshToken }
+      });
+    }
 
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error);
-    res.status(500).json({ error: "Server error during logout" });
+    // Even if error, we want the client to clear local tokens
+    res.status(200).json({ message: "Logged out" });
   }
 };
 
@@ -221,7 +256,15 @@ export const googleCallback = async (req: Request, res: Response) => {
     const refreshToken = generateRefreshToken(user._id.toString());
 
     // Store refresh token in database
-    user.refreshToken = refreshToken;
+    user.refreshTokens.push(refreshToken);
+
+    // Enforce max sessions limit
+    if (user.refreshTokens.length > config.MAX_ACTIVE_SESSIONS) {
+      user.refreshTokens = user.refreshTokens.slice(
+        -config.MAX_ACTIVE_SESSIONS
+      );
+    }
+
     await user.save();
 
     // Redirect to frontend with tokens
@@ -248,7 +291,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     // Return user without password
     const userResponse: any = user.toObject();
     delete userResponse.password;
-    delete userResponse.refreshToken;
+    delete userResponse.refreshTokens;
 
     res.status(200).json(userResponse);
   } catch (error) {
