@@ -52,8 +52,13 @@ function AuthCallbackContent() {
         // Store tokens
         setTokens(accessToken, refreshToken);
 
-        // Sync user state
-        await refreshUser();
+        // Sync user state with simple error handling
+        try {
+          await refreshUser();
+        } catch (err) {
+          console.error("User refresh failed", err);
+          // Continue anyway as we have tokens
+        }
 
         // Ensure loading shows for at least 2 seconds
         const elapsed = Date.now() - startTime;

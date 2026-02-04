@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { authService } from "@services/authService";
@@ -38,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login(email, password);
       setUser(response.user);
@@ -49,27 +55,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.error(message);
       throw error;
     }
-  };
+  }, []);
 
-  const register = async (name: string, email: string, password: string) => {
-    try {
-      const response = await authService.register(name, email, password);
-      setUser(response.user);
-      toast.success("Registration successful!");
-      // Don't redirect - let the modal handle closing
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Registration failed";
-      toast.error(message);
-      throw error;
-    }
-  };
+  const register = useCallback(
+    async (name: string, email: string, password: string) => {
+      try {
+        const response = await authService.register(name, email, password);
+        setUser(response.user);
+        toast.success("Registration successful!");
+        // Don't redirect - let the modal handle closing
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Registration failed";
+        toast.error(message);
+        throw error;
+      }
+    },
+    []
+  );
 
-  const loginWithGoogle = () => {
+  const loginWithGoogle = useCallback(() => {
     authService.loginWithGoogle();
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authService.logout();
       setUser(null);
@@ -80,9 +89,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.error(message);
       console.error("Logout error:", error);
     }
-  };
+  }, [router]);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const userData = await authService.getCurrentUser();
       setUser(userData);
@@ -90,23 +99,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Failed to refresh user:", error);
       setUser(null);
     }
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        register,
-        loginWithGoogle,
-        logout,
-        refreshUser
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = React.useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      register,
+      loginWithGoogle,
+      logout,
+      refreshUser
+    }),
+    [user, loading, login, register, loginWithGoogle, logout, refreshUser]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
