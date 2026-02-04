@@ -15,16 +15,48 @@ export default function LoginPage() {
     password: ""
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
       await login(formData.email, formData.password);
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed:", error);
+      if (error.name === "ApiError" && error.details) {
+        const serverErrors: Record<string, string> = {};
+        error.details.forEach((detail: any) => {
+          if (!serverErrors[detail.field]) {
+            serverErrors[detail.field] = detail.message;
+          }
+        });
+        setErrors(serverErrors);
+      } else {
+        setErrors({ form: error.message || "Login failed" });
+      }
     } finally {
       setLoading(false);
     }
@@ -53,7 +85,13 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Login</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {errors.form && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+              {errors.form}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Email */}
             <div>
               <label
@@ -65,14 +103,18 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                required
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="your@email.com"
               />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -86,14 +128,18 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
-                required
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="••••••••"
               />
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+              )}
             </div>
 
             {/* Submit Button */}

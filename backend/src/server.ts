@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 // Mount routes
-app.use("/auth", authRoutes);
+app.use("/v1/auth", authRoutes);
 
 // Root route
 app.get("/", (req, res) => {

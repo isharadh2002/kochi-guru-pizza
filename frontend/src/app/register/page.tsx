@@ -17,20 +17,59 @@ export default function RegisterPage() {
     confirmPassword: ""
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Full Name is required";
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else {
+      if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
+      }
+      if (!/[A-Z]/.test(formData.password)) {
+        newErrors.password = "Password must contain an uppercase letter";
+      }
+      if (!/[a-z]/.test(formData.password)) {
+        newErrors.password = "Password must contain a lowercase letter";
+      }
+      if (!/[0-9]/.test(formData.password)) {
+        newErrors.password = "Password must contain a number";
+      }
+      if (!/[\W_]/.test(formData.password)) {
+        newErrors.password = "Password must contain a special character";
+      }
+    }
+
+    // Confirm Password validation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
 
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (!validateForm()) {
       return;
     }
 
@@ -39,8 +78,19 @@ export default function RegisterPage() {
     try {
       await register(formData.name, formData.email, formData.password);
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration failed:", error);
+      if (error.name === "ApiError" && error.details) {
+        const serverErrors: Record<string, string> = {};
+        error.details.forEach((detail: any) => {
+          if (!serverErrors[detail.field]) {
+            serverErrors[detail.field] = detail.message;
+          }
+        });
+        setErrors(serverErrors);
+      } else {
+        setErrors({ form: error.message || "Registration failed" });
+      }
     } finally {
       setLoading(false);
     }
@@ -69,13 +119,13 @@ export default function RegisterPage() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign Up</h2>
 
-          {error && (
+          {errors.form && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-              {error}
+              {errors.form}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Name */}
             <div>
               <label
@@ -87,14 +137,18 @@ export default function RegisterPage() {
               <input
                 id="name"
                 type="text"
-                required
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.name ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="John Doe"
               />
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -108,14 +162,18 @@ export default function RegisterPage() {
               <input
                 id="email"
                 type="email"
-                required
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="your@email.com"
               />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -129,14 +187,18 @@ export default function RegisterPage() {
               <input
                 id="password"
                 type="password"
-                required
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="••••••••"
               />
+              {errors.password && (
+                <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+              )}
             </div>
 
             {/* Confirm Password */}
@@ -150,14 +212,20 @@ export default function RegisterPage() {
               <input
                 id="confirmPassword"
                 type="password"
-                required
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({ ...formData, confirmPassword: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="••••••••"
               />
+              {errors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}

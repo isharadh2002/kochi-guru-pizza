@@ -16,7 +16,7 @@ export const validateRequest =
         return res.status(400).json({
           error: "Validation failed",
           details: error.issues.map((e) => ({
-            field: e.path.join("."),
+            field: e.path.slice(1).join("."),
             message: e.message
           }))
         });

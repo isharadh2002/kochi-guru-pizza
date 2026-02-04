@@ -79,6 +79,7 @@ const Header: React.FC = () => {
                           src={user.profilePicture}
                           alt={user.name}
                           className="w-9 h-9 rounded-full object-cover"
+                          referrerPolicy="no-referrer"
                         />
                       ) : (
                         <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center">

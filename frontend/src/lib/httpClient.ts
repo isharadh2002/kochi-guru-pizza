@@ -1,4 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { ApiError } from "@lib/ApiError";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/v1";
 
 // Token storage keys
 const ACCESS_TOKEN_KEY = "kochi_access_token";
@@ -67,13 +69,17 @@ export const httpClient = async <T>(
   const accessToken = getAccessToken();
 
   // Add authorization header if token exists
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>)
-  };
+  // Normalize headers using Headers API
+  const headers = new Headers(options.headers);
 
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
+  // Set default Content-Type if not provided
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  // Add authorization header if token exists
+  if (accessToken && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
   try {
@@ -83,7 +89,12 @@ export const httpClient = async <T>(
     });
 
     // Handle 401 - Token expired, try to refresh
-    if (response.status === 401) {
+    // Skip for login endpoint to avoid page refresh loop on invalid credentials
+    if (
+      response.status === 401 &&
+      !endpoint.includes("/auth/login") &&
+      !endpoint.includes("/auth/register")
+    ) {
       const refreshToken = getRefreshToken();
 
       if (refreshToken) {
@@ -105,7 +116,8 @@ export const httpClient = async <T>(
             setTokens(newAccessToken, newRefreshToken);
 
             // Retry original request with new token
-            headers["Authorization"] = `Bearer ${newAccessToken}`;
+            // Retry original request with new token
+            headers.set("Authorization", `Bearer ${newAccessToken}`);
             const retryResponse = await fetch(url, {
               ...options,
               headers
@@ -139,6 +151,11 @@ export const httpClient = async <T>(
       const errorData = await response
         .json()
         .catch(() => ({ error: "Unknown error" }));
+
+      if (response.status === 400 && errorData.details) {
+        throw new ApiError(errorData.error, response.status, errorData.details);
+      }
+
       throw new Error(
         errorData.error || `HTTP error! status: ${response.status}`
       );
