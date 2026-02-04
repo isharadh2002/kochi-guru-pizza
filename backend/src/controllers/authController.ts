@@ -43,11 +43,6 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validate input
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -107,11 +102,6 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
-    }
-
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
@@ -169,10 +159,6 @@ export const login = async (req: Request, res: Response) => {
 export const refreshAccessToken = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(400).json({ error: "Refresh token is required" });
-    }
 
     if (!config.REFRESH_TOKEN_SECRET) {
       throw new Error("REFRESH_TOKEN_SECRET is not defined");

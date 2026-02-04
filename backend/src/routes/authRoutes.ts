@@ -3,16 +3,36 @@ import passport from "passport";
 import * as authController from "../controllers/authController";
 import { authenticate } from "../middleware/authenticate";
 import config from "../config";
+import { validateRequest } from "../middleware/validateRequest";
+import {
+  registerSchema,
+  loginSchema,
+  refreshTokenSchema,
+  logoutSchema
+} from "../schemas/authSchemas";
 
 const router = Router();
 
 // Email/Password Authentication
-router.post("/register", authController.register);
-router.post("/login", authController.login);
+router.post(
+  "/register",
+  validateRequest(registerSchema),
+  authController.register
+);
+router.post("/login", validateRequest(loginSchema), authController.login);
 
 // Token Management
-router.post("/refresh", authController.refreshAccessToken);
-router.post("/logout", authenticate, authController.logout);
+router.post(
+  "/refresh",
+  validateRequest(refreshTokenSchema),
+  authController.refreshAccessToken
+);
+router.post(
+  "/logout",
+  authenticate,
+  validateRequest(logoutSchema),
+  authController.logout
+);
 
 // Google OAuth
 router.get(
