@@ -75,9 +75,11 @@ const Header: React.FC = () => {
                       className="flex items-center gap-2 hover:opacity-80 transition"
                     >
                       {user.profilePicture ? (
-                        <img
+                        <Image
                           src={user.profilePicture}
                           alt={user.name}
+                          width={36}
+                          height={36}
                           className="w-9 h-9 rounded-full object-cover"
                           referrerPolicy="no-referrer"
                         />

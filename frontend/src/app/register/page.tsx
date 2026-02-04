@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@contexts/AuthContext";
 import { authService } from "@services/authService";
+import { ApiError } from "@typings/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -78,11 +79,12 @@ export default function RegisterPage() {
     try {
       await register(formData.name, formData.email, formData.password);
       router.push("/");
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       console.error("Registration failed:", error);
       if (error.name === "ApiError" && error.details) {
         const serverErrors: Record<string, string> = {};
-        error.details.forEach((detail: any) => {
+        error.details.forEach((detail) => {
           if (!serverErrors[detail.field]) {
             serverErrors[detail.field] = detail.message;
           }

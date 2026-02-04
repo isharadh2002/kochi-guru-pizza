@@ -134,7 +134,7 @@ export const httpClient = async <T>(
             if (typeof window !== "undefined") window.location.href = "/login";
             throw new Error("Session expired. Please login again.");
           }
-        } catch (refreshError) {
+        } catch {
           clearTokens();
           if (typeof window !== "undefined") window.location.href = "/login";
           throw new Error("Session expired. Please login again.");

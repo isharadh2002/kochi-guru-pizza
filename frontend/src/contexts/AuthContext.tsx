@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const userData = await authService.getCurrentUser();
           setUser(userData);
-        } catch (error) {
+        } catch (error: unknown) {
           console.error("Failed to fetch user:", error);
           setUser(null);
         }
@@ -44,8 +44,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(response.user);
       toast.success("Login successful!");
       // Don't redirect - let the modal handle closing
-    } catch (error: any) {
-      toast.error(error.message || "Login failed");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Login failed";
+      toast.error(message);
       throw error;
     }
   };
@@ -56,8 +57,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(response.user);
       toast.success("Registration successful!");
       // Don't redirect - let the modal handle closing
-    } catch (error: any) {
-      toast.error(error.message || "Registration failed");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Registration failed";
+      toast.error(message);
       throw error;
     }
   };
@@ -72,8 +75,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(null);
       toast.success("Logged out successfully");
       router.push("/");
-    } catch (error: any) {
-      toast.error("Logout failed");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Logout failed";
+      toast.error(message);
       console.error("Logout error:", error);
     }
   };
@@ -82,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const userData = await authService.getCurrentUser();
       setUser(userData);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to refresh user:", error);
       setUser(null);
     }

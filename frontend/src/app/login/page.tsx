@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@contexts/AuthContext";
 import { authService } from "@services/authService";
+import { ApiError } from "@typings/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,11 +45,12 @@ export default function LoginPage() {
     try {
       await login(formData.email, formData.password);
       router.push("/");
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       console.error("Login failed:", error);
       if (error.name === "ApiError" && error.details) {
         const serverErrors: Record<string, string> = {};
-        error.details.forEach((detail: any) => {
+        error.details.forEach((detail) => {
           if (!serverErrors[detail.field]) {
             serverErrors[detail.field] = detail.message;
           }
@@ -176,7 +178,7 @@ export default function LoginPage() {
 
           {/* Sign Up Link */}
           <p className="mt-6 text-center text-gray-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="text-orange-600 hover:text-orange-700 font-semibold"
