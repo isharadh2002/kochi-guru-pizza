@@ -11,10 +11,6 @@ connectDB();
 const app = express();
 const port = config.PORT;
 
-if (!config.FRONTEND_URL) {
-  throw new Error("FRONTEND_URL is not defined");
-}
-
 // Security middleware
 app.use(helmet());
 

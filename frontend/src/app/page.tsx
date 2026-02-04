@@ -6,7 +6,7 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative min-h-[600px] flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-50">
+      <section className="relative min-h-[600px] flex items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-50">
         <div className="absolute inset-0 bg-[url('/pizza-pattern.svg')] opacity-5"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -120,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-orange-600 to-orange-500">
+      <section className="py-16 bg-linear-to-r from-orange-600 to-orange-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Order?

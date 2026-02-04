@@ -2,6 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import * as authController from "../controllers/authController";
 import { authenticate } from "../middleware/authenticate";
+import config from "../config";
 
 const router = Router();
 
@@ -26,7 +27,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `${process.env.FRONTEND_URL}?error=auth_failed`
+    failureRedirect: `${config.FRONTEND_URL}?error=auth_failed`
   }),
   authController.googleCallback
 );

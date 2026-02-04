@@ -1,11 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setTokens } from "@lib/httpClient";
 import { useAuth } from "@contexts/AuthContext";
 import toast from "react-hot-toast";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -14,8 +14,21 @@ function AuthCallbackContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
+  const processedRef = useRef(false);
 
   useEffect(() => {
+    if (processedRef.current) return;
+    processedRef.current = true;
+
+    const timeoutIds: NodeJS.Timeout[] = [];
+
+    // Helper to track timeouts
+    const activeSetTimeout = (callback: () => void, ms: number) => {
+      const id = setTimeout(callback, ms);
+      timeoutIds.push(id);
+      return id;
+    };
+
     const processAuth = async () => {
       const startTime = Date.now();
       const accessToken = searchParams.get("accessToken");
@@ -27,10 +40,10 @@ function AuthCallbackContent() {
         const elapsed = Date.now() - startTime;
         const delay = Math.max(0, 2000 - elapsed);
 
-        setTimeout(() => {
+        activeSetTimeout(() => {
           setStatus("error");
           toast.error("Authentication failed");
-          setTimeout(() => router.push("/login"), 2000);
+          activeSetTimeout(() => router.push("/login"), 2000);
         }, delay);
         return;
       }
@@ -46,11 +59,11 @@ function AuthCallbackContent() {
         const elapsed = Date.now() - startTime;
         const delay = Math.max(0, 2000 - elapsed);
 
-        setTimeout(() => {
+        activeSetTimeout(() => {
           setStatus("success");
 
           // Show success message for 3 seconds then redirect
-          setTimeout(() => {
+          activeSetTimeout(() => {
             toast.success("Login successful!");
             router.push("/");
           }, 3000);
@@ -60,19 +73,24 @@ function AuthCallbackContent() {
         const elapsed = Date.now() - startTime;
         const delay = Math.max(0, 2000 - elapsed);
 
-        setTimeout(() => {
+        activeSetTimeout(() => {
           setStatus("error");
           toast.error("Authentication failed - missing tokens");
-          setTimeout(() => router.push("/login"), 2000);
+          activeSetTimeout(() => router.push("/login"), 2000);
         }, delay);
       }
     };
 
     processAuth();
-  }, [searchParams, router]);
+
+    // Cleanup function
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
+    };
+  }, [searchParams, router, refreshUser]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-50">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-50">
       <div className="text-center">
         {status === "loading" && (
           <>
@@ -99,9 +117,7 @@ function AuthCallbackContent() {
         {status === "error" && (
           <>
             <div className="mb-6">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-3xl">❌</span>
-              </div>
+              <XCircle className="w-16 h-16 text-red-500 mx-auto" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               Authentication Failed
@@ -118,7 +134,7 @@ export default function AuthCallback() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-50">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-50">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto mb-6"></div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
