@@ -5,7 +5,8 @@ import React, {
   useContext,
   useState,
   useEffect,
-  useCallback
+  useCallback,
+  useMemo
 } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -101,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const value = React.useMemo(
+  const value = useMemo(
     () => ({
       user,
       loading,
