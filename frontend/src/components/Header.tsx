@@ -28,12 +28,12 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white/75 dark:bg-gray-900/75 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-md">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-white/20 dark:border-gray-800 shadow-sm dark:shadow-gray-900/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="relative w-10 h-10">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10 transition-transform group-hover:scale-105 duration-300">
                 <Image
                   src="/logo.svg"
                   alt="Kochi Guru Pizza"
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
                   className="object-contain hidden dark:block"
                 />
               </div>
-              <span className="text-xl font-bold text-orange-600">
+              <span className="text-xl font-bold text-orange-600 dark:text-orange-500 tracking-tight">
                 Kochi Guru Pizza
               </span>
             </Link>
@@ -56,25 +56,25 @@ const Header: React.FC = () => {
             <nav className="hidden md:flex items-center gap-8">
               <Link
                 href="/"
-                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors"
               >
                 Home
               </Link>
               <Link
                 href="/menu"
-                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors"
               >
                 Menu
               </Link>
               <Link
                 href="/about"
-                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors"
               >
                 About
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors"
               >
                 Contact
               </Link>
@@ -87,33 +87,41 @@ const Header: React.FC = () => {
                   <div className="relative">
                     <button
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="flex items-center gap-2 hover:opacity-80 transition"
+                      className="flex items-center gap-2 hover:opacity-80 transition py-1 px-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
                       {user.profilePicture ? (
                         <Image
                           src={user.profilePicture}
                           alt={user.name}
-                          width={36}
-                          height={36}
-                          className="w-9 h-9 rounded-full object-cover"
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-orange-100 dark:ring-orange-900/20"
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center">
-                          <User className="w-5 h-5 text-white" />
+                        <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center ring-2 ring-orange-100 dark:ring-orange-900/20">
+                          <User className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                         </div>
                       )}
-                      <span className="text-gray-700 font-medium">
+                      <span className="text-gray-700 dark:text-gray-200 font-medium text-sm">
                         {user.name}
                       </span>
-                      <ChevronDown className="w-4 h-4 text-gray-500" />
+                      <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     </button>
 
                     {dropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2">
+                      <div className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 overflow-hidden ring-1 ring-black/5 dark:ring-white/5 transform origin-top-right transition-all">
+                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 mb-1">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
                         <Link
                           href="/orders"
-                          className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-700 dark:hover:text-orange-400 transition-colors"
                         >
                           <ShoppingBag className="w-4 h-4" />
                           My Orders
@@ -121,15 +129,16 @@ const Header: React.FC = () => {
                         {(user.role === "admin" || user.role === "staff") && (
                           <Link
                             href="/dashboard"
-                            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-700 dark:hover:text-orange-400 transition-colors"
                           >
                             <LayoutDashboard className="w-4 h-4" />
                             Dashboard
                           </Link>
                         )}
+                        <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />
                         <button
                           onClick={logout}
-                          className="w-full flex items-center gap-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors bg-transparent"
                         >
                           <LogOut className="w-4 h-4" />
                           Logout
@@ -141,27 +150,30 @@ const Header: React.FC = () => {
                   <>
                     <Link
                       href="/login"
-                      className="px-4 py-2 text-gray-700 hover:text-orange-600 transition"
+                      className="px-5 py-2.5 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 font-semibold transition-colors text-sm"
                     >
                       Login
                     </Link>
                     <Link
                       href="/register"
-                      className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+                      className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-full shadow-lg shadow-orange-500/20 transition-all hover:shadow-orange-500/30 text-sm"
                     >
                       Sign Up
                     </Link>
                   </>
                 )
               ) : (
-                <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-gray-700 animate-pulse" />
+                <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse ring-2 ring-gray-50 dark:ring-gray-800" />
               )}
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300"
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen);
+                setIsThemeExpanded(false);
+              }}
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -176,98 +188,131 @@ const Header: React.FC = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-16 left-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg md:hidden z-40"
+              className="absolute top-full left-0 w-full md:hidden border-t border-gray-100 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg z-40 overflow-hidden"
             >
-              <nav className="px-4 py-4 space-y-2">
+              <nav className="px-4 py-6 space-y-1">
                 <Link
                   href="/"
-                  className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                  className="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                 >
                   Home
                 </Link>
                 <Link
                   href="/menu"
-                  className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                  className="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                 >
                   Menu
                 </Link>
                 <Link
                   href="/about"
-                  className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                  className="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                 >
                   About
                 </Link>
                 <Link
                   href="/contact"
-                  className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                  className="block px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                 >
                   Contact
                 </Link>
 
+                <div className="h-px bg-gray-100 dark:bg-gray-800 my-4 mx-4" />
+
                 {!loading ? (
                   user ? (
                     <>
+                      <div className="px-4 py-2 flex items-center gap-3 mb-2">
+                        {user.profilePicture ? (
+                          <Image
+                            src={user.profilePicture}
+                            alt={user.name}
+                            width={40}
+                            height={40}
+                            className="w-10 h-10 rounded-full object-cover ring-2 ring-orange-100 dark:ring-orange-900/20"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center ring-2 ring-orange-100 dark:ring-orange-900/20">
+                            <User className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-bold text-gray-900 dark:text-white">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
                       <Link
                         href="/orders"
-                        className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                       >
+                        <ShoppingBag className="w-5 h-5" />
                         My Orders
                       </Link>
                       {(user.role === "admin" || user.role === "staff") && (
                         <Link
                           href="/dashboard"
-                          className="block py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-900/10 hover:text-orange-600 dark:hover:text-orange-500 rounded-xl transition-colors"
                         >
+                          <LayoutDashboard className="w-5 h-5" />
                           Dashboard
                         </Link>
                       )}
+
                       <button
                         onClick={logout}
-                        className="block w-full text-left py-2 text-red-600 font-medium"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors text-left"
                       >
+                        <LogOut className="w-5 h-5" />
                         Logout
                       </button>
                     </>
                   ) : (
-                    <>
+                    <div className="p-4 grid gap-3">
                       <Link
                         href="/login"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-left py-2 text-gray-700 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-500 font-medium"
+                        className="flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors"
                       >
                         Login
                       </Link>
                       <Link
                         href="/register"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-left py-2 text-orange-600 hover:text-orange-700 font-medium"
+                        className="flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-xl shadow-lg shadow-orange-500/20 transition-all"
                       >
                         Sign Up
                       </Link>
-                    </>
+                    </div>
                   )
                 ) : (
-                  <div className="py-2 text-gray-500">Loading...</div>
+                  <div className="py-4 px-4 text-center text-gray-500 dark:text-gray-400">
+                    <div className="w-8 h-8 mx-auto border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
                 )}
 
                 {/* Mobile Theme Toggle Button */}
-                <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-800">
+                <div className="pt-2 mt-2 border-t border-gray-100 dark:border-gray-800">
                   <button
                     onClick={() => setIsThemeExpanded(!isThemeExpanded)}
-                    className="w-full flex items-center justify-between px-1 py-3 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800">
+                      <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                         {theme === "dark" ? (
-                          <Moon className="w-5 h-5" />
+                          <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                         ) : theme === "light" ? (
-                          <Sun className="w-5 h-5" />
+                          <Sun className="w-5 h-5 text-orange-500" />
                         ) : (
-                          <Monitor className="w-5 h-5" />
+                          <Monitor className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         )}
                       </div>
                       <span className="font-medium">Appearance</span>
@@ -285,11 +330,11 @@ const Header: React.FC = () => {
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="space-y-1 overflow-hidden mt-2"
+                        className="space-y-1 overflow-hidden mt-1 px-4 pb-2"
                       >
                         <button
                           onClick={() => setTheme("light")}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-full text-sm font-medium transition-colors ${
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             theme === "light"
                               ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500"
                               : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
@@ -300,9 +345,9 @@ const Header: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setTheme("dark")}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-full text-sm font-medium transition-colors ${
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             theme === "dark"
-                              ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500"
+                              ? "bg-gray-800 text-white"
                               : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                           }`}
                         >
@@ -311,9 +356,9 @@ const Header: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setTheme("system")}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-full text-sm font-medium transition-colors ${
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             theme === "system"
-                              ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500"
+                              ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500"
                               : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                           }`}
                         >

@@ -48,7 +48,8 @@ export default function TrendingItems() {
             Trending Now
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Discover our most popular items that customers can't get enough of
+            Discover our most popular items that customers can&apos;t get enough
+            of
           </p>
         </div>
 
@@ -61,11 +62,16 @@ export default function TrendingItems() {
             >
               {/* Image */}
               <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-gray-400 dark:text-gray-500 text-sm">
-                    Image placeholder
-                  </div>
-                </div>
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  onError={(e) => {
+                    e.currentTarget.src = "/assets/image-fallback.jpg";
+                    e.currentTarget.srcset = "";
+                  }}
+                />
               </div>
 
               {/* Content */}

@@ -67,14 +67,14 @@ export default function PromotionsSection() {
   }, [emblaApi]);
 
   return (
-    <section className="relative w-full py-16 bg-gray-100 dark:bg-gray-900">
+    <section className="relative w-full py-16 bg-gray-100 dark:bg-gray-950 transition-colors duration-300">
       {/* Section Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
         <h2 className="font-heading text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Special Offers
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Don't miss out on our exclusive deals and limited-time promotions
+          Don&apos;t miss out on our exclusive deals and limited-time promotions
         </p>
       </div>
 

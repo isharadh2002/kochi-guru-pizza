@@ -72,7 +72,7 @@ export default function HeroSection() {
   }, [emblaApi]);
 
   return (
-    <section className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden">
+    <section className="relative w-full h-[90vh] overflow-hidden">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex">
           {heroSlides.map((slide, index) => (
@@ -81,7 +81,7 @@ export default function HeroSection() {
               className="embla__slide relative flex-[0_0_100%] min-w-0"
             >
               {/* Image */}
-              <div className="relative w-full h-[80vh] md:h-[90vh]">
+              <div className="relative w-full h-[90vh]">
                 <Image
                   src={slide.imageUrl}
                   alt={slide.heading}
