@@ -1,0 +1,97 @@
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import { ShoppingCart } from "lucide-react";
+
+type TrendingItem = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+};
+
+const trendingItems: TrendingItem[] = [
+  {
+    id: 1,
+    name: "Margherita Pizza",
+    price: 15.99,
+    image: "/assets/images/trending/pizza.jpg"
+  },
+  {
+    id: 2,
+    name: "Loaded Burger",
+    price: 12.99,
+    image: "/assets/images/trending/burger.jpg"
+  },
+  {
+    id: 3,
+    name: "Fresh Mango Juice",
+    price: 4.99,
+    image: "/assets/images/trending/juice.jpg"
+  },
+  {
+    id: 4,
+    name: "Creamy Pasta",
+    price: 13.99,
+    image: "/assets/images/trending/pasta.jpg"
+  }
+];
+
+export default function TrendingItems() {
+  return (
+    <section className="py-16 bg-white dark:bg-gray-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center mb-12">
+          <h2 className="font-heading text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Trending Now
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Discover our most popular items that customers can't get enough of
+          </p>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {trendingItems.map((item) => (
+            <div
+              key={item.id}
+              className="group bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden dark:border dark:border-gray-700"
+            >
+              {/* Image */}
+              <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-gray-400 dark:text-gray-500 text-sm">
+                    Image placeholder
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h3 className="font-heading text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-1">
+                  {item.name}
+                </h3>
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-bold text-orange-600 dark:text-orange-500">
+                    ${item.price.toFixed(2)}
+                  </span>
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+                    aria-label={`Add ${item.name} to cart`}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span className="text-sm font-medium hidden sm:inline">
+                      Add
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
