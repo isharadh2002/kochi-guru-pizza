@@ -1,7 +1,7 @@
 import Header from "@components/Header";
-import HeroSection from "@components/HeroSection";
-import PromotionsSection from "@components/PromotionsSection";
-import TrendingItems from "@components/TrendingItems";
+import HeroSection from "@/components/HomeComponents/HeroSection";
+import PromotionsSection from "@/components/HomeComponents/PromotionsSection";
+import TrendingItems from "@/components/HomeComponents/TrendingItems";
 import Footer from "@components/Footer";
 
 export default function Home() {
