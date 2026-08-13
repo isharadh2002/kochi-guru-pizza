@@ -22,6 +22,7 @@ FROM node:24-alpine as runner
 
 WORKDIR /app
 
+# Copy build output from builder
 COPY --from=builder /app /app
 
 # Inform Docker that the container will listen on port 5000 at runtime

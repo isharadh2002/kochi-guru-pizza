@@ -24,12 +24,13 @@ RUN npm run build
 
 # Stage 2: Copy the build to runner
 FROM node:24-alpine as runner
-# Inform Docker that the container will listen on port 3000 at runtime
 
 WORKDIR /app
 
+# Copy build output from builder
 COPY --from=builder /app /app
 
+# Inform Docker that the container will listen on port 3000 at runtime
 EXPOSE 3000
 
 # Start the production server
